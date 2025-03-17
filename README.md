@@ -15,6 +15,8 @@ Anweisungen:
 •	Identifiziere Trends: Hat sich der Heimvorteil verändert?
 •	Führe eine statistische Analyse durch (Mittelwert, Varianz, Trendanalyse).
 •	Präsentiere die Ergebnisse in Tabellen oder Grafiken zur besseren Visualisierung.
+•  und ...
+
 
 2) Welche Liga hat die wenigsten 0:0-Spiele, und welche Liga ist die spannendste?
    
@@ -25,6 +27,7 @@ Anweisungen:
 •	Berechne die durchschnittliche Anzahl an Toren pro Spiel für jede Liga.
 •	Erstelle ein Ranking der spannendsten Ligen (Ligen mit mehr Toren sind spannender).
 •	Visualisiere die Ergebnisse mit matplotlib/seaborn.
+•  und ...
 
 3) In welchem Monat oder welcher Saison werden die meisten Tore erzielt, und beeinflusst die Saison die Anzahl der Tore?
    
@@ -35,7 +38,7 @@ Anweisungen:
 •	Interpretiere und erkläre, wie sich die Jahreszeiten auf die Toranzahl auswirken.
 •	Schreibe eine verständliche Erklärung der Ergebnisse für den Abschlussbericht.
 •	Stelle sicher, dass die Ergebnisse für Leser leicht verständlich sind.
-
+•  und ...
 
 4) Zusätzliche optionale Forschungsfrage
    
@@ -45,7 +48,7 @@ Anweisungen:
 •	Analysiere auffällige Teams mit extrem hohen oder niedrigen Torzahlen.
 •	Untersuche, ob es Zusammenhänge zwischen bestimmten Mannschaften und Torquoten gibt.
 •	Falls relevant, erstelle eine Statistik oder Visualisierung.
-
+•  und ...
 Allgemeine Richtlinien:
 •	Jedes Teammitglied sollte seinen Prozess und seine Ergebnisse dokumentieren.
 •	Visualisierungen und statistische Ergebnisse sollten gut beschriftet sein.
