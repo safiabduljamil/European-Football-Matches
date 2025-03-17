@@ -40,15 +40,20 @@ Anweisungen:
 •	Stelle sicher, dass die Ergebnisse für Leser leicht verständlich sind.
 •  und ...
 
-4) Zusätzliche optionale Forschungsfrage
+4) Inwieweit können die Ergebnisse zukünftiger Fußballspiele durch die Analyse
+historischer Spieldaten mit statistischen Methoden prognostiziert werden?  
+Zusätzliche optionale Forschungsfrage
    
 (Jedes Teammitglied kann daran arbeiten)
 
-•	Gibt es spezifische Teams, die besonders oft hohe oder niedrige Tore pro Spiel erzielen?
-•	Analysiere auffällige Teams mit extrem hohen oder niedrigen Torzahlen.
-•	Untersuche, ob es Zusammenhänge zwischen bestimmten Mannschaften und Torquoten gibt.
-•	Falls relevant, erstelle eine Statistik oder Visualisierung.
-•  und ...
+•  Bereinige und bereite historische Spieldaten vor (Heimteam, Auswärtsteam, Tore, etc.).
+•  Erstelle zusätzliche Merkmale wie Teamform, Ligaposition, Head-to-Head-Ergebnisse.
+•  Verwende statistische Modelle (z. B. logistische Regression, Random Forest) oder maschinelles Lernen (z. B. SVM, Gradient Boosting) zur Prognose von Spielergebnissen.
+
+•  Teile die Daten in Trainings- und Testdaten auf, trainiere das Modell und validiere es.
+•  Prognostiziere die Ergebnisse zukünftiger Spiele und bewerte die Modellgenauigkeit (z. B. Accuracy, F1-Score).
+•  Visualisiere die Vorhersagen und überprüfe die Modellleistung.
+
 Allgemeine Richtlinien:
 •	Jedes Teammitglied sollte seinen Prozess und seine Ergebnisse dokumentieren.
 •	Visualisierungen und statistische Ergebnisse sollten gut beschriftet sein.
