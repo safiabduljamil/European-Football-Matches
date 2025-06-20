@@ -29,28 +29,47 @@ dash==2.14.1
 pandas==2.1.4
 plotly==5.18.0
 
-Veränderer: Murat - 28.03.2025
+## 📝 Changelog - Home Advantage Analysis (Murat Arikan)  
+**Last Updated:** March 28, 2025  
+### 🔧 Implemented Improvements  
 
-Was getan wurde:
+#### Data Processing  
+✅ **Lines 4-9**:  
+- Performed data cleaning and validation  
+- Executed information queries and consistency checks  
 
-• In den Zeilen 4, 5, 6, 7, 8 und 9 habe ich eine Datenbereinigung, Informationsabfrage und Überprüfung durchgeführt.
-                 
-• In den Zeilen 10 und 11 habe ich die Anzahl der Siege überprüft, um den Heimvorteil zu analysieren, und die Ergebnisse mit einem Kreisdiagramm visualisiert.
-               
-• In den Zeilen 12 und 13 habe ich die Spalte mit dem Jahr, die als String vorlag, in ein Datumsformat umgewandelt und auf die Jahreszahlen zugegriffen.
-              
-• In den Zeilen 14 und 15 habe ich die Veränderung der Heimsiege im Jahresverlauf berechnet und visualisiert.
+#### Visualization  
+✅ **Lines 10-11**:  
+- Analyzed home advantage through win counts  
+- Created pie chart visualizations of results  
 
-• In Zeile 16 habe ich eine visuelle Linie hinzugefügt.
+#### Date Conversion  
+✅ **Lines 12-13**:  
+- Converted year column from string to datetime format  
+- Extracted year values for temporal analysis  
 
-• In Zeile 17 habe ich den durchschnittlichen Siegwert und die Varianz berechnet.
+#### Trend Analysis  
+✅ **Lines 14-18**:  
+- Calculated yearly home win trends  
+- Added trendline visualization  
+- Computed:  
+  - Average win values  
+  - Variance metrics  
+  - Win rate decline slope  
 
-• In Zeile 18 habe ich die Abnahmerate der Siege und die Steigung des Trends berechnet.
+#### Country-Level Analysis  
+✅ **Lines 19-21**:  
+- Added new "Country" column to DataFrame  
 
-• In den Zeilen 19, 20 und 21 wurde dem DataFrame eine neue Spalte mit dem Namen „Land“ hinzugefügt. In Zeile 21 kann man sie sehen.
+✅ **Lines 22-24**:  
+- Identified countries with the strongest home advantage  
+- Visualized cross-country comparisons  
 
-• In den Zeilen 22, 23 und 24 habe ich berechnet und visualisiert, in welchem Land der Heimvorteil am stärksten ausgeprägt ist.
+#### Enhanced Visualizations  
+⚠️ **Lines 24-25**:  
+- Initial country trend visualization proved cluttered  
 
-• In den Zeilen 24 und 25 habe ich berechnet und visualisiert, wie sich der Heimvorteil je nach Land verändert hat. (Die Grafik ist allerdings ziemlich unübersichtlich geworden.)
-
-• In den Zeilen 27 und 28 habe ich, weil die vorherige Grafik unübersichtlich war, eine neue Visualisierung erstellt, die die Trend-Steigungen pro Land zeigt. Sie ist verständlicher geworden (glaube ich jedenfalls :) ).
+✅ **Lines 27-28**:  
+- Implemented improved visualization showing:  
+  - Per-country trend slopes  
+  - Clear comparative analysis  
