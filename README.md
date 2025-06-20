@@ -71,6 +71,21 @@ Install the required Python packages:
 
 pip install -r requirements.txt
 
+## 🚀 Running the Dashboard
+python app.py
+
+##screenshots
+![127 0 0 1_8050_](https://github.com/user-attachments/assets/89b2a9e5-888e-4b6b-90b2-c2afc4aa388c)
+![127 0 0 1_8050_ (1)](https://github.com/user-attachments/assets/ac13222c-a493-451b-b18a-ffb47d568ed8)
+![127 0 0 1_8050_ (2)](https://github.com/user-attachments/assets/f1205a00-4cd1-45d1-aed3-312b0619e889)
+![127 0 0 1_8050_ (3)](https://github.com/user-attachments/assets/4be6b63c-b10c-4ae0-9a57-8535936a17ac)
+
+
+
+
+
+
+
 💡 Note: Make sure you have Python 3.10 or higher installed before running the above command.
 
 ## 👥 Project Contributors
