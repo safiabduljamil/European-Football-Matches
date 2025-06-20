@@ -1,7 +1,5 @@
 # ⚽ European Football Matches Analysis Dashboard
 
-![Dashboard Screenshot](screenshot.png) *Add actual dashboard screenshot*
-
 ## 📋 Project Overview
 Interactive web dashboard analyzing European football statistics with visualizations of:
 - Home advantage trends across leagues
@@ -42,17 +40,8 @@ plotly==5.18.0
 
 # ⚡ Dash App Overview
 
-This project is built using [Dash](https://dash.plotly.com/), a powerful Python framework for building interactive web applications and dashboards — entirely in Python. Dash is ideal for data visualization, data analysis, and ML apps, especially for users familiar with Python and Plotly.
+This project is built using [Dash](https://dash.plotly.com/), a powerful Python framework for building interactive web applications and dashboards entirely in Python. Dash is ideal for data visualization, data analysis, and ML apps, especially for users familiar with Python and Plotly.
 ---
-## 📦 Requirements
-
-To run this Dash app, make sure the following Python packages are installed:
-dash
-dash-bootstrap-components
-pandas
-plotly
-scikit-learn
-
 ## 📊 Dataset Description
 
 The dataset used in this project is available on [Kaggle](https://www.kaggle.com/datasets/flynn28/european-football-matches) and includes historical data from 22 European football leagues.
@@ -79,8 +68,17 @@ Navigate to the dashboard folder where the requirements.txt file is located:
 
 cd  dashboard
 Install the required Python packages:
+## 📦 Requirements
 
-pip install -r requirements.txt
+To run this Dash app, make sure the following Python packages are installed:
+dash
+dash-bootstrap-components
+pandas
+plotly
+scikit-learn 
+
+The requirements.txt file is in the Dashboard folder.
+pip install -r requirements.txt 
 
 ## 🚀 Running the Dashboard
 python app.py
@@ -92,6 +90,6 @@ python app.py
 ![127 0 0 1_8050_ (3)](https://github.com/user-attachments/assets/4be6b63c-b10c-4ae0-9a57-8535936a17ac)
 
 
-💡 Note: Make sure you have Python 3.10 or higher installed before running the above command.
+💡 Note: Ensure you have Python 3.10 or higher installed before running the above command.
 ```bash
 
