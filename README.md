@@ -23,53 +23,65 @@ Interactive web dashboard analyzing European football statistics with visualizat
 ## 🛠️ Technical Implementation
 
 ### 📦 Dependencies
-``bash
+
 #Core Requirements
 dash==2.14.1
 pandas==2.1.4
 plotly==5.18.0
 
-## 📝 Changelog - Home Advantage Analysis (Murat Arikan)  
-**Last Updated:** March 28, 2025  
-### 🔧 Implemented Improvements  
+# ⚡ Dash App Overview
 
-#### Data Processing  
-✅ **Lines 4-9**:  
-- Performed data cleaning and validation  
-- Executed information queries and consistency checks  
+This project is built using [Dash](https://dash.plotly.com/), a powerful Python framework for building interactive web applications and dashboards — entirely in Python. Dash is ideal for data visualization, data analysis, and ML apps, especially for users familiar with Python and Plotly.
+---
+## 📦 Requirements
 
-#### Visualization  
-✅ **Lines 10-11**:  
-- Analyzed home advantage through win counts  
-- Created pie chart visualizations of results  
+To run this Dash app, make sure the following Python packages are installed:
+dash
+dash-bootstrap-components
+pandas
+plotly
+scikit-learn
 
-#### Date Conversion  
-✅ **Lines 12-13**:  
-- Converted year column from string to datetime format  
-- Extracted year values for temporal analysis  
+## 📊 Dataset Description
 
-#### Trend Analysis  
-✅ **Lines 14-18**:  
-- Calculated yearly home win trends  
-- Added trendline visualization  
-- Computed:  
-  - Average win values  
-  - Variance metrics  
-  - Win rate decline slope  
+The dataset used in this project is available on [Kaggle](https://www.kaggle.com/datasets/flynn28/european-football-matches) and includes historical data from 22 European football leagues.
 
-#### Country-Level Analysis  
-✅ **Lines 19-21**:  
-- Added new "Country" column to DataFrame  
+### Dataset Columns:
+- `League`: Name of the football league
+- `Date`: Date of the match
+- `HomeTeam`: Name of the home team
+- `AwayTeam`: Name of the away team
+- `HomeGoals`: Number of goals by home team
+- `AwayGoals`: Number of goals by away team
+- `Result`: Match result (H = Home win, A = Away win, D = Draw)
 
-✅ **Lines 22-24**:  
-- Identified countries with the strongest home advantage  
-- Visualized cross-country comparisons  
+**Data Size:**  
+- 23 CSV tables (22 individual leagues + 1 merged file)  
+- Approx. 22.0 MB in total  
+- All files follow the same 7-column structure
 
-#### Enhanced Visualizations  
-⚠️ **Lines 24-25**:  
-- Initial country trend visualization proved cluttered  
+## 🔧 Installation Instructions
 
-✅ **Lines 27-28**:  
-- Implemented improved visualization showing:  
-  - Per-country trend slopes  
-  - Clear comparative analysis  
+1. **Clone the repository** (or download it as a ZIP):
+git clone https://github.com/safiabduljamil/European-Football-Matches.git
+Navigate to the dashboard folder where the requirements.txt file is located:
+
+cd  dashboard
+Install the required Python packages:
+
+pip install -r requirements.txt
+
+💡 Note: Make sure you have Python 3.10 or higher installed before running the above command.
+
+## 👥 Project Contributors
+
+- **Abdul Jamil Safi** – Projektleiter  
+  📧 abdul.safi@stud.fhgr.ch
+
+- **Murat Arikan** – Statistical analysis  
+  📧 murat.arikan@stud.fhgr.ch
+
+- **Leandro Da Silva Pinto** – Visual analytics  
+  📧 leandro.dasilvapinto@stud.fhgr.ch
+```bash
+
