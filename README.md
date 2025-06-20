@@ -15,8 +15,8 @@ Interactive web dashboard analyzing European football statistics with visualizat
 
 | Question | Assignee | Key Tasks |
 |----------|----------|-----------|
-| **Home advantage trends** | Murat Arikan | - Calculate home win % by league<br>- Analyze historical trends<br>- Statistical testing |
 | **League excitement rankings** | Abdul Jamil Safi | - Count 0-0 draws<br>- Calculate avg. goals/match<br>- Rank leagues by excitement |
+| **Home advantage trends** | Murat Arikan | - Calculate home win % by league<br>- Analyze historical trends<br>- Statistical testing |
 | **Seasonal goal patterns** | Leandro Da Silva Pinto | - Monthly goal averages<br>- Yearly comparisons<br>- Weather impact analysis |
 | *Bonus: Match prediction* | All Members | - ML model development<br>- Feature engineering<br>- Accuracy validation |
 
@@ -28,7 +28,6 @@ Interactive web dashboard analyzing European football statistics with visualizat
 dash==2.14.1
 pandas==2.1.4
 plotly==5.18.0
-# Abgabetermin: 30.03.2025
 
 Veränderer: Murat - 28.03.2025
 
