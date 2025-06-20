@@ -9,16 +9,27 @@ Interactive web dashboard analyzing European football statistics with visualizat
 - Seasonal goal patterns
 - Head-to-head team comparisons
 
-## 👥 Team Responsibilities
+### 🔍👥 Research Questions and Project Contributors
 
-### 🔍 Research Questions
+- **Abdul Jamil Safi** – Project Lead  
+  🔹 Focus: Research Question 2  
+  🔹 Tasks: 0:0 analysis, SpannungsScore, league comparison  
+  📧 abdul.safi@stud.fhgr.ch
 
-| Question | Assignee | Key Tasks |
-|----------|----------|-----------|
-| **League excitement rankings** | Abdul Jamil Safi | - Count 0-0 draws<br>- Calculate avg. goals/match<br>- Rank leagues by excitement |
-| **Home advantage trends** | Murat Arikan | - Calculate home win % by league<br>- Analyze historical trends<br>- Statistical testing |
-| **Seasonal goal patterns** | Leandro Da Silva Pinto | - Monthly goal averages<br>- Yearly comparisons<br>- Weather impact analysis |
-| *Bonus: Match prediction* | All Members | - ML model development<br>- Feature engineering<br>- Accuracy validation |
+- **Murat Arikan**  
+  🔹 Focus: Research Question 1  
+  🔹 Tasks: Home advantage trends, statistical testing  
+  📧 murat.arikan@stud.fhgr.ch
+
+- **Leandro Da Silva Pinto**  
+  🔹 Focus: Research Question 3  
+  🔹 Tasks: Seasonal goal trends, month-by-month analysis  
+  📧 leandro.dasilvapinto@stud.fhgr.ch
+
+- **All Members**  
+  🔹 Focus: Research Question 4 (Bonus)  
+  🔹 Tasks: Match prediction, model integration into dashboard
+
 
 ## 🛠️ Technical Implementation
 
@@ -81,22 +92,6 @@ python app.py
 ![127 0 0 1_8050_ (3)](https://github.com/user-attachments/assets/4be6b63c-b10c-4ae0-9a57-8535936a17ac)
 
 
-
-
-
-
-
 💡 Note: Make sure you have Python 3.10 or higher installed before running the above command.
-
-## 👥 Project Contributors
-
-- **Abdul Jamil Safi** – Projektleiter  
-  📧 abdul.safi@stud.fhgr.ch
-
-- **Murat Arikan** – Statistical analysis  
-  📧 murat.arikan@stud.fhgr.ch
-
-- **Leandro Da Silva Pinto** – Visual analytics  
-  📧 leandro.dasilvapinto@stud.fhgr.ch
 ```bash
 
