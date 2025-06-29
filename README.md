@@ -1,89 +1,95 @@
-# European-Football-Matches
-# Project Kickoff
+# ⚽ European Football Matches Analysis Dashboard
 
-Projekttitel: Analyse europäischer Fussballspiele
-Forschungsfragen & Aufgabenzuweisung
-Um eine effiziente Bearbeitung des Projekts zu gewährleisten, haben wir die Forschungsfragen unter den Teammitgliedern aufgeteilt. Jedes Mitglied ist für eine spezifische Frage verantwortlich, basierend auf seinen Stärken. Falls jemand zusätzlich an einer anderen Frage arbeiten möchte, ist das ebenfalls in Ordnung. Eine zusätzliche optionale Forschungsfrage steht allen Teammitgliedern zur Verfügung.
-Wir werden die Arbeit gemeinsam in einem GitHub-Repository organisieren, sodass jeder Änderungen hochladen und einsehen kann. Bitte stellt sicher, dass ihr regelmäßig eure Fortschritte im Repository aktualisiert.
+## 📋 Project Overview
+Interactive web dashboard analyzing European football statistics with visualizations of:
+- Home advantage trends across leagues
+- 0-0 draw frequencies and league excitement
+- Seasonal goal patterns
+- Head-to-head team comparisons
 
-1) Gibt es einen Heimvorteil in allen europäischen Ligen, und hat sich dieser im Laufe der Jahre verringert?
+### 🔍👥 Research Questions and Project Contributors
 
-Zugewiesen an: Murat Arikan 
+- **Abdul Jamil Safi** – Project Lead  
+  🔹 Focus: Research Question 2  
+  🔹 Tasks: 0:0 analysis, SpannungsScore, league comparison  
+  📧 abdul.safi@stud.fhgr.ch
 
-Anweisungen:
-•	Berechne den Prozentsatz der Heimsiege pro Liga über die Jahre.
-•	Identifiziere Trends: Hat sich der Heimvorteil verändert?
-•	Führe eine statistische Analyse durch (Mittelwert, Varianz, Trendanalyse).
-•	Präsentiere die Ergebnisse in Tabellen oder Grafiken zur besseren Visualisierung.
-•  und ...
+- **Murat Arikan**  
+  🔹 Focus: Research Question 1  
+  🔹 Tasks: Home advantage trends, statistical testing  
+  📧 murat.arikan@stud.fhgr.ch
+
+- **Leandro Da Silva Pinto**  
+  🔹 Focus: Research Question 3  
+  🔹 Tasks: Seasonal goal trends, month-by-month analysis  
+  📧 leandro.dasilvapinto@stud.fhgr.ch
+
+- **All Members**  
+  🔹 Focus: Research Question 4 (Bonus)  
+  🔹 Tasks: Match prediction, model integration into dashboard
 
 
-2) Welche Liga hat die wenigsten 0:0-Spiele, und welche Liga ist die spannendste?
-   
-Zugewiesen an: Abdul Jamil Safi 
+## 🛠️ Technical Implementation
 
-Anweisungen:
-•	Schreibe Python-Skripte, um 0:0-Spiele pro Liga zu filtern und zu zählen.
-•	Berechne die durchschnittliche Anzahl an Toren pro Spiel für jede Liga.
-•	Erstelle ein Ranking der spannendsten Ligen (Ligen mit mehr Toren sind spannender).
-•	Visualisiere die Ergebnisse mit matplotlib/seaborn.
-•  und ...
+### 📦 Dependencies
 
-3) In welchem Monat oder welcher Saison werden die meisten Tore erzielt, und beeinflusst die Saison die Anzahl der Tore?
-   
-Zugewiesen an: Leandro Da Silva Pinto 
+#Core Requirements
+dash==2.14.1
+pandas==2.1.4
+plotly==5.18.0
 
-Anweisungen:
-•	Extrahiere relevante Daten und analysiere Tor-Trends pro Monat/Saison.
-•	Interpretiere und erkläre, wie sich die Jahreszeiten auf die Toranzahl auswirken.
-•	Schreibe eine verständliche Erklärung der Ergebnisse für den Abschlussbericht.
-•	Stelle sicher, dass die Ergebnisse für Leser leicht verständlich sind.
-•  und ...
+# ⚡ Dash App Overview
 
-4) Inwieweit können die Ergebnisse zukünftiger Fußballspiele durch die Analyse
-historischer Spieldaten mit statistischen Methoden prognostiziert werden?  
-Zusätzliche optionale Forschungsfrage
-   
-(Jedes Teammitglied kann daran arbeiten)
+This project is built using [Dash](https://dash.plotly.com/), a powerful Python framework for building interactive web applications and dashboards entirely in Python. Dash is ideal for data visualization, data analysis, and ML apps, especially for users familiar with Python and Plotly.
+---
+## 📊 Dataset Description
 
-•  Bereinige und bereite historische Spieldaten vor (Heimteam, Auswärtsteam, Tore, etc.).
-•  Erstelle zusätzliche Merkmale wie Teamform, Ligaposition, Head-to-Head-Ergebnisse.
-•  Verwende statistische Modelle (z. B. logistische Regression, Random Forest) oder maschinelles Lernen (z. B. SVM, Gradient Boosting) zur Prognose von Spielergebnissen.
+The dataset used in this project is available on [Kaggle](https://www.kaggle.com/datasets/flynn28/european-football-matches) and includes historical data from 22 European football leagues.
 
-•  Teile die Daten in Trainings- und Testdaten auf, trainiere das Modell und validiere es.
-•  Prognostiziere die Ergebnisse zukünftiger Spiele und bewerte die Modellgenauigkeit (z. B. Accuracy, F1-Score).
-•  Visualisiere die Vorhersagen und überprüfe die Modellleistung.
+### Dataset Columns:
+- `League`: Name of the football league
+- `Date`: Date of the match
+- `HomeTeam`: Name of the home team
+- `AwayTeam`: Name of the away team
+- `HomeGoals`: Number of goals by home team
+- `AwayGoals`: Number of goals by away team
+- `Result`: Match result (H = Home win, A = Away win, D = Draw)
 
-Allgemeine Richtlinien:
-•	Jedes Teammitglied sollte seinen Prozess und seine Ergebnisse dokumentieren.
-•	Visualisierungen und statistische Ergebnisse sollten gut beschriftet sein.
-•	Der Abschlussbericht sollte eine Zusammenfassung aller Ergebnisse enthalten.
-•	Zusammenarbeit wird empfohlen: Besprecht Herausforderungen und Erkenntnisse im Team.
-•	Alle Fortschritte und Ergebnisse sollten regelmäßig im GitHub-Repository hochgeladen werden.
-# Abgabetermin: 30.03.2025
+**Data Size:**  
+- 23 CSV tables (22 individual leagues + 1 merged file)  
+- Approx. 22.0 MB in total  
+- All files follow the same 7-column structure
 
-Veränderer: Murat - 28.03.2025
+## 🔧 Installation Instructions
 
-Was getan wurde:
+1. **Clone the repository** (or download it as a ZIP):
+git clone https://github.com/safiabduljamil/European-Football-Matches.git
+Navigate to the dashboard folder where the requirements.txt file is located:
 
-• In den Zeilen 4, 5, 6, 7, 8 und 9 habe ich eine Datenbereinigung, Informationsabfrage und Überprüfung durchgeführt.
-                 
-• In den Zeilen 10 und 11 habe ich die Anzahl der Siege überprüft, um den Heimvorteil zu analysieren, und die Ergebnisse mit einem Kreisdiagramm visualisiert.
-               
-• In den Zeilen 12 und 13 habe ich die Spalte mit dem Jahr, die als String vorlag, in ein Datumsformat umgewandelt und auf die Jahreszahlen zugegriffen.
-              
-• In den Zeilen 14 und 15 habe ich die Veränderung der Heimsiege im Jahresverlauf berechnet und visualisiert.
+cd  dashboard
+Install the required Python packages:
+## 📦 Requirements
 
-• In Zeile 16 habe ich eine visuelle Linie hinzugefügt.
+To run this Dash app, make sure the following Python packages are installed:
+dash
+dash-bootstrap-components
+pandas
+plotly
+scikit-learn 
 
-• In Zeile 17 habe ich den durchschnittlichen Siegwert und die Varianz berechnet.
+The requirements.txt file is in the Dashboard folder.
+pip install -r requirements.txt 
 
-• In Zeile 18 habe ich die Abnahmerate der Siege und die Steigung des Trends berechnet.
+## 🚀 Running the Dashboard
+python app.py
 
-• In den Zeilen 19, 20 und 21 wurde dem DataFrame eine neue Spalte mit dem Namen „Land“ hinzugefügt. In Zeile 21 kann man sie sehen.
+##screenshots
+![127 0 0 1_8050_](https://github.com/user-attachments/assets/89b2a9e5-888e-4b6b-90b2-c2afc4aa388c)
+![127 0 0 1_8050_ (1)](https://github.com/user-attachments/assets/ac13222c-a493-451b-b18a-ffb47d568ed8)
+![127 0 0 1_8050_ (2)](https://github.com/user-attachments/assets/f1205a00-4cd1-45d1-aed3-312b0619e889)
+![127 0 0 1_8050_ (3)](https://github.com/user-attachments/assets/4be6b63c-b10c-4ae0-9a57-8535936a17ac)
 
-• In den Zeilen 22, 23 und 24 habe ich berechnet und visualisiert, in welchem Land der Heimvorteil am stärksten ausgeprägt ist.
 
-• In den Zeilen 24 und 25 habe ich berechnet und visualisiert, wie sich der Heimvorteil je nach Land verändert hat. (Die Grafik ist allerdings ziemlich unübersichtlich geworden.)
+💡 Note: Ensure you have Python 3.10 or higher installed before running the above command.
+```bash
 
-• In den Zeilen 27 und 28 habe ich, weil die vorherige Grafik unübersichtlich war, eine neue Visualisierung erstellt, die die Trend-Steigungen pro Land zeigt. Sie ist verständlicher geworden (glaube ich jedenfalls :) ).
