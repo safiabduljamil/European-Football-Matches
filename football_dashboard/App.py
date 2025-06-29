@@ -9,9 +9,7 @@ import plotly.express as px
 import plotly.graph_objects as go
 from datetime import datetime
 
-# ------------------------
 # Data Loading and Preparation
-# ------------------------
 
 def load_match_data():
     """Load all CSV files from the shared-data folder"""
@@ -172,7 +170,9 @@ def prepare_seasonal_data(df):
         'season_avg': season_avg
     }
 
+# ------------------------
 # Load and prepare all data
+# ------------------------
 matches_df = load_match_data()
 league_stats = compute_league_stats(matches_df)
 league_zero_draw_rate = league_stats.set_index('League')['GoallessPercentage'].to_dict()
@@ -181,18 +181,276 @@ home_advantage_data = prepare_home_advantage_data(matches_df)
 seasonal_data = prepare_seasonal_data(matches_df)
 
 # ------------------------
+# App1.py Data Processing
+# ------------------------
+def load_data_app1():
+    """Load data for the extended home advantage analysis"""
+    directory = '../shared-data'
+    if not os.path.exists(directory):
+        raise FileNotFoundError(f"Folder '{directory}' not found.")
+
+    data_frames = []
+    for filename in os.listdir(directory):
+        if filename.endswith(('.xlsx', '.xls', '.csv')):
+            file_path = os.path.join(directory, filename)
+            try:
+                if filename.endswith('.csv'):
+                    df = pd.read_csv(file_path)
+                else:
+                    df = pd.read_excel(file_path, engine='openpyxl')
+                data_frames.append(df)
+            except Exception as e:
+                print(f"Error loading {filename}: {e}")
+
+    if data_frames:
+        combined_df = pd.concat(data_frames, ignore_index=True)
+        return combined_df
+    else:
+        print("No valid files found in the folder.")
+        return None
+
+# Load the data for extended analysis
+app1_df = load_data_app1()
+
+# Data cleaning and preparation for app1
+if app1_df is not None:
+    app1_df['Date'] = pd.to_datetime(app1_df['Date'], dayfirst=True, errors='coerce')
+    app1_df = app1_df.dropna(subset=['Date'])
+    app1_df['Year'] = app1_df['Date'].dt.year
+    app1_df['Result'] = app1_df.apply(
+        lambda row: 'H' if row['HomeGoals'] > row['AwayGoals'] 
+        else 'A' if row['HomeGoals'] < row['AwayGoals'] 
+        else 'D', axis=1
+    )
+
+# Calculate basic statistics for app1
+if app1_df is not None:
+    total_matches_app1 = app1_df.shape[0]
+    home_wins_app1 = (app1_df['Result'] == 'H').sum()
+    away_wins_app1 = (app1_df['Result'] == 'A').sum()
+    draws_app1 = (app1_df['Result'] == 'D').sum()
+
+    home_win_pct_app1 = (home_wins_app1 / total_matches_app1) * 100
+    away_win_pct_app1 = (away_wins_app1 / total_matches_app1) * 100
+    draw_pct_app1 = (draws_app1 / total_matches_app1) * 100
+
+    avg_home_goals_app1 = app1_df['HomeGoals'].mean()
+    avg_away_goals_app1 = app1_df['AwayGoals'].mean()
+
+    # Create yearly stats
+    yearly_stats_app1 = app1_df.groupby('Year').agg(
+        total_matches=('Result', 'count'),
+        home_wins=('Result', lambda x: (x == 'H').sum()),
+        away_wins=('Result', lambda x: (x == 'A').sum()),
+        avg_home_goals=('HomeGoals', 'mean'),
+        avg_away_goals=('AwayGoals', 'mean')
+    )
+    
+    yearly_stats_app1['home_win_percentage'] = (yearly_stats_app1['home_wins'] / yearly_stats_app1['total_matches']) * 100
+    yearly_stats_app1['away_win_percentage'] = (yearly_stats_app1['away_wins'] / yearly_stats_app1['total_matches']) * 100
+
+    # Create figures for Tab 1
+    match_fig_app1 = go.Figure([
+        go.Bar(
+            x=['Home Wins', 'Away Wins', 'Draws'],
+            y=[home_win_pct_app1, away_win_pct_app1, draw_pct_app1],
+            marker_color=['royalblue', 'darkorange', 'gold'],
+            text=[f"{home_win_pct_app1:.1f}%", f"{away_win_pct_app1:.1f}%", f"{draw_pct_app1:.1f}%"],
+            textposition='auto'
+        )
+    ])
+
+    match_fig_app1.update_layout(
+        title='Win Rate: Home vs Away Teams',
+        yaxis_title='Percentage (%)',
+        yaxis=dict(range=[0, 100])
+    )
+
+    goal_fig_app1 = go.Figure([
+        go.Bar(
+            x=['Home Team', 'Away Team'],
+            y=[avg_home_goals_app1, avg_away_goals_app1],
+            marker_color=['royalblue', 'darkorange'],
+            text=[f"{avg_home_goals_app1:.2f}", f"{avg_away_goals_app1:.2f}"],
+            textposition='auto'
+        )
+    ])
+
+    goal_fig_app1.update_layout(
+        title='Average Goals: Home vs Away Teams',
+        yaxis_title='Average Goals Per Match'
+    )
+
+    # Create figures for Tab 2 (Trends)
+    years_app1 = yearly_stats_app1.index
+    home_win_pct_app1 = yearly_stats_app1['home_win_percentage']
+    away_win_pct_app1 = yearly_stats_app1['away_win_percentage']
+    home_goals_app1 = yearly_stats_app1['avg_home_goals']
+    away_goals_app1 = yearly_stats_app1['avg_away_goals']
+
+    # Win rate trend
+    z_home_win = np.polyfit(years_app1, home_win_pct_app1, 1)
+    p_home_win = np.poly1d(z_home_win)
+
+    z_away_win = np.polyfit(years_app1, away_win_pct_app1, 1)
+    p_away_win = np.poly1d(z_away_win)
+
+    fig_winrate_trend_app1 = go.Figure()
+    fig_winrate_trend_app1.add_trace(go.Scatter(x=years_app1, y=home_win_pct_app1, mode='lines+markers', name='Home Win %'))
+    fig_winrate_trend_app1.add_trace(go.Scatter(x=years_app1, y=away_win_pct_app1, mode='lines+markers', name='Away Win %'))
+    fig_winrate_trend_app1.add_trace(go.Scatter(x=years_app1, y=p_home_win(years_app1), mode='lines', line=dict(dash='dash', color='red'), name='Home Trend'))
+    fig_winrate_trend_app1.add_trace(go.Scatter(x=years_app1, y=p_away_win(years_app1), mode='lines', line=dict(dash='dash', color='blue'), name='Away Trend'))
+    fig_winrate_trend_app1.update_layout(
+        title='Win Rate Trends: Home vs Away Teams',
+        xaxis_title='Year',
+        yaxis_title='Win Percentage (%)',
+        template='plotly_white'
+    )
+
+    # Goals trend
+    z_home_goals = np.polyfit(years_app1, home_goals_app1, 1)
+    p_home_goals = np.poly1d(z_home_goals)
+
+    z_away_goals = np.polyfit(years_app1, away_goals_app1, 1)
+    p_away_goals = np.poly1d(z_away_goals)
+
+    fig_goals_avg_app1 = go.Figure()
+    fig_goals_avg_app1.add_trace(go.Scatter(x=years_app1, y=home_goals_app1, mode='lines+markers', name='Home Goals', marker=dict(symbol='circle')))
+    fig_goals_avg_app1.add_trace(go.Scatter(x=years_app1, y=away_goals_app1, mode='lines+markers', name='Away Goals', marker=dict(symbol='square')))
+    fig_goals_avg_app1.add_trace(go.Scatter(x=years_app1, y=p_home_goals(years_app1), mode='lines', line=dict(dash='dash', color='red'), name='Home Trend'))
+    fig_goals_avg_app1.add_trace(go.Scatter(x=years_app1, y=p_away_goals(years_app1), mode='lines', line=dict(dash='dash', color='blue'), name='Away Trend'))
+    fig_goals_avg_app1.update_layout(
+        title='Average Goals Trends: Home vs Away',
+        xaxis_title='Year',
+        yaxis_title='Average Goals',
+        legend=dict(x=0.01, y=0.99)
+    )
+
+    # Country-specific analysis
+    country_stats_app1 = app1_df.groupby('League').agg(
+        total_matches=('Result', 'count'),
+        home_wins=('Result', lambda x: (x == 'H').sum()),
+        away_wins=('Result', lambda x: (x == 'A').sum()),
+        avg_home_goals=('HomeGoals', 'mean'),
+        avg_away_goals=('AwayGoals', 'mean')
+    )
+
+    # Calculate percentages
+    country_stats_app1['home_win_pct'] = (country_stats_app1['home_wins'] / country_stats_app1['total_matches']) * 100
+    country_stats_app1['away_win_pct'] = (country_stats_app1['away_wins'] / country_stats_app1['total_matches']) * 100
+    country_stats_app1['win_pct_diff'] = country_stats_app1['home_win_pct'] - country_stats_app1['away_win_pct']
+    country_stats_app1['goal_diff'] = country_stats_app1['avg_home_goals'] - country_stats_app1['avg_away_goals']
+
+    # Normalize values for scoring
+    country_stats_app1['norm_win_diff'] = (country_stats_app1['win_pct_diff'] - country_stats_app1['win_pct_diff'].min()) / (country_stats_app1['win_pct_diff'].max() - country_stats_app1['win_pct_diff'].min())
+    country_stats_app1['norm_goal_diff'] = (country_stats_app1['goal_diff'] - country_stats_app1['goal_diff'].min()) / (country_stats_app1['goal_diff'].max() - country_stats_app1['goal_diff'].min())
+    country_stats_app1['total_score'] = (country_stats_app1['norm_win_diff'] * 0.5) + (country_stats_app1['norm_goal_diff'] * 0.5)
+
+    # Sort for visualization
+    country_stats_sorted_win_app1 = country_stats_app1.sort_values('home_win_pct', ascending=False)
+    country_stats_sorted_win_diff_app1 = country_stats_app1.sort_values('win_pct_diff', ascending=False)
+    country_stats_sorted_goal_app1 = country_stats_app1.sort_values('avg_home_goals', ascending=False)
+    country_stats_sorted_goal_diff_app1 = country_stats_app1.sort_values('goal_diff', ascending=False)
+    country_stats_sorted_score_app1 = country_stats_app1.sort_values('total_score', ascending=False)
+
+    # Country trend analysis
+    country_yearly_stats_app1 = app1_df.groupby(['League', 'Year']).agg(
+        total_matches=('Result', 'count'),
+        home_wins=('Result', lambda x: (x == 'H').sum()),
+        away_wins=('Result', lambda x: (x == 'A').sum()),
+        avg_home_goals=('HomeGoals', 'mean'),
+        avg_away_goals=('AwayGoals', 'mean')
+    ).reset_index()
+
+    # Calculate percentages and differences
+    country_yearly_stats_app1['home_win_pct'] = (country_yearly_stats_app1['home_wins'] / country_yearly_stats_app1['total_matches']) * 100
+    country_yearly_stats_app1['away_win_pct'] = (country_yearly_stats_app1['away_wins'] / country_yearly_stats_app1['total_matches']) * 100
+    country_yearly_stats_app1['win_pct_diff'] = country_yearly_stats_app1['home_win_pct'] - country_yearly_stats_app1['away_win_pct']
+    country_yearly_stats_app1['goal_diff'] = country_yearly_stats_app1['avg_home_goals'] - country_yearly_stats_app1['avg_away_goals']
+
+    # Calculate trend slopes for each country
+    trend_data = []
+    for league in country_yearly_stats_app1['League'].unique():
+        league_data = country_yearly_stats_app1[country_yearly_stats_app1['League'] == league]
+        
+        # Win percentage difference trend
+        z_win = np.polyfit(league_data['Year'], league_data['win_pct_diff'], 1)
+        slope_win = z_win[0]
+        
+        # Goal difference trend
+        z_goal = np.polyfit(league_data['Year'], league_data['goal_diff'], 1)
+        slope_goal = z_goal[0]
+        
+        trend_data.append({
+            'League': league,
+            'win_diff_slope': slope_win,
+            'goal_diff_slope': slope_goal
+        })
+
+    trend_df = pd.DataFrame(trend_data)
+
+    # Normalize trend slopes
+    trend_df['norm_win_slope'] = (trend_df['win_diff_slope'] - trend_df['win_diff_slope'].min()) / (trend_df['win_diff_slope'].max() - trend_df['win_diff_slope'].min())
+    trend_df['norm_goal_slope'] = (trend_df['goal_diff_slope'] - trend_df['goal_diff_slope'].min()) / (trend_df['goal_diff_slope'].max() - trend_df['goal_diff_slope'].min())
+    trend_df['total_trend_score'] = (trend_df['norm_win_slope'] * 0.5) + (trend_df['norm_goal_slope'] * 0.5)
+
+    # Sort for visualization
+    trend_df_sorted_win = trend_df.sort_values('win_diff_slope')
+    trend_df_sorted_goal = trend_df.sort_values('goal_diff_slope')
+    trend_df_sorted_score = trend_df.sort_values('total_trend_score')
+
+    # Precompute figures for Tab 5
+    fig_tab3_11 = go.Figure(go.Bar(
+        x=country_stats_sorted_score_app1.index,
+        y=country_stats_sorted_score_app1['total_score'],
+        marker_color='blue'
+    ))
+    fig_tab3_11.update_layout(
+        title='Home Advantage Score by Country',
+        xaxis_title='Country',
+        yaxis_title='Total Score (0-1)'
+    )
+
+    fig_tab4_18 = go.Figure(go.Bar(
+        x=trend_df_sorted_score['League'],
+        y=trend_df_sorted_score['total_trend_score'],
+        marker_color='green'
+    ))
+    fig_tab4_18.update_layout(
+        title='Home Advantage Decline Score',
+        xaxis_title='Country',
+        yaxis_title='Total Trend Score (0-1)'
+    )
+
+    # Create combined score for Tab 5
+    df_tab5 = country_stats_app1[['total_score']].reset_index()
+    df_tab5 = df_tab5.merge(trend_df[['League', 'total_trend_score']], on='League', how='inner')
+    df_tab5['combined_score'] = df_tab5['total_score'] - df_tab5['total_trend_score']
+    df_tab5 = df_tab5.sort_values('combined_score', ascending=False)
+
+    fig_combined_score = go.Figure(go.Bar(
+        x=df_tab5['League'],
+        y=df_tab5['combined_score'],
+        marker_color='purple'
+    ))
+    fig_combined_score.update_layout(
+        title='Combined Home Advantage Score',
+        xaxis_title='Country',
+        yaxis_title='Combined Score'
+    )
+
+# ------------------------
 # App Setup
 # ------------------------
-
 app = Dash(__name__, 
            external_stylesheets=[dbc.themes.BOOTSTRAP, 'https://codepen.io/chriddyp/pen/bWLwgP.css'], 
            suppress_callback_exceptions=True)
 
-app.title = "Football Statistics Dashboard"
+app.title = "European Football Statistics Dashboard"
 
 app.layout = dbc.Container([
     dbc.Row([
-        dbc.Col(html.H1("Football Statistics Dashboard", 
+        dbc.Col(html.H1("European Football Statistics Dashboard", 
                     className="text-center mb-4"),
             width=12)
     ]),
@@ -233,45 +491,178 @@ app.layout = dbc.Container([
                     ])
                 ]),
                 
-                # Tab 2: Home Advantage Analysis
-                dcc.Tab(label="Home Advantage Analysis", value='tab-home', className='custom-tab', children=[
+                # Tab 2: Home Advantage Analysis (Extended from app1.py)
+                dcc.Tab(label="Home Advantage Analysis", value='tab-home-extended', className='custom-tab', children=[
                     html.Br(),
-                    dbc.Card([
-                        dbc.CardBody([
-                            html.H4("Home Advantage Statistics", className="card-title"),
-                            dbc.Row([
-                                dbc.Col([
-                                    html.H5("Overall Statistics"),
-                                    html.P(f"Total matches analyzed: {home_advantage_data['total_matches']:,}"),
-                                    html.P(f"Home wins: {home_advantage_data['home_wins']:,} ({home_advantage_data['home_win_pct']:.2f}%)"),
-                                    html.P(f"Away wins: {home_advantage_data['away_wins']:,} ({home_advantage_data['away_win_pct']:.2f}%)"),
-                                    html.P(f"Draws: {home_advantage_data['draws']:,} ({home_advantage_data['draw_pct']:.2f}%)"),
-                                    html.P(f"Average home goals: {home_advantage_data['avg_home_goals']:.2f}"),
-                                    html.P(f"Average away goals: {home_advantage_data['avg_away_goals']:.2f}"),
-                                ], width=4),
-                                dbc.Col(dcc.Graph(id='win-rate-chart'), width=4),
-                                dbc.Col(dcc.Graph(id='goals-chart'), width=4)
+                    html.Div([
+                        html.H1("HOME ADVANTAGE ANALYSIS", style={'textAlign': 'center'}),
+                        html.H2("Does home advantage exist in European football leagues, and has it decreased over the years?", 
+                                style={'textAlign': 'center'}),
+                        html.P("This analysis is based on a dataset of 216,883 matches from 22 leagues in 11 countries between 1993 and 2023. "
+                               "Through five thematic focuses, 19 different visualizations were created and various insights were gained.",
+                               style={'textAlign': 'center'}),
+                        dcc.Tabs(id="app1-tabs", value='app1-tab1', children=[
+                            # TAB 1: Home Advantage
+                            dcc.Tab(label='Home Advantage', value='app1-tab1', children=[
+                                html.Div([
+                                    html.H3("Analysis of home advantage in European football"),
+                                    html.P("Figure 1 compares the win rates of home and away teams across all matches."),
+                                    html.P("Figure 2 shows the comparison of average goals per match between home and away teams."),
+                                    html.P("The result: With a win rate of 45% and an average of 1.50 goals per match, home teams perform significantly better than away teams. "
+                                           "This confirms the well-known home advantage in football."),
+                                    
+                                    dcc.Dropdown(
+                                        id='app1-tab1-dropdown',
+                                        options=[
+                                            {'label': 'Figure 1: Win Rate', 'value': 'win_rate'},
+                                            {'label': 'Figure 2: Average Goals', 'value': 'avg_goals'}
+                                        ],
+                                        value='win_rate'
+                                    ),
+                                    dcc.Graph(id='app1-tab1-graph')
+                                ], style={'padding': '20px'})
                             ]),
-                            html.Br(),
-                            dbc.Row([
-                                dbc.Col(dcc.Graph(id='win-rate-trend-chart'), width=6),
-                                dbc.Col(dcc.Graph(id='goals-trend-chart'), width=6)
+
+                            # TAB 2: Development of Home Advantage
+                            dcc.Tab(label='Development Over Time', value='app1-tab2', children=[
+                                html.Div([
+                                    html.H3("Analysis of the development of home advantage in European football over time"),
+                                    html.P("Figure 3 shows the change in win rates of home and away teams over the years using trend lines."),
+                                    html.P("Figure 4 shows the change in average goals scored by home and away teams over the years using trend lines."),
+                                    html.P("Both win rates and average goals show a decline for home teams over the years. In contrast, away teams show a steady upward trend. "
+                                           "Despite smaller fluctuations over time, home teams overall win less often and score fewer goals, "
+                                           "while away teams are becoming more successful and score more frequently."),
+                                    html.P("An extraordinary influence outside the main topic is visible in this section. "
+                                           "In both figures, a significant negative deviation from the average is visible in 2020. "
+                                           "This phase lasts about a year before the values recover. This pattern strongly resembles the COVID-19 pandemic. "
+                                           "During that time, when games were played without spectators and strict restrictions were in place, "
+                                           "home advantage reached its lowest level. This suggests that the presence of fans has a noticeable impact on home advantage."),
+                                    
+                                    dcc.Dropdown(
+                                        id='app1-tab2-dropdown',
+                                        options=[
+                                            {'label': 'Figure 3: Win Rate Trend', 'value': 'win_rate_trend'},
+                                            {'label': 'Figure 4: Goals Trend', 'value': 'goals_trend'}
+                                        ],
+                                        value='win_rate_trend'
+                                    ),
+                                    dcc.Graph(id='app1-tab2-graph')
+                                ], style={'padding': '20px'})
                             ]),
-                            html.Br(),
-                            dbc.Row([
-                                dbc.Col(dcc.Graph(id='country-comparison-chart'), width=12)
+
+                            # TAB 3: Home Advantage by Country
+                            dcc.Tab(label='By Country', value='app1-tab3', children=[
+                                html.Div([
+                                    html.H3("Analysis of home advantage in European football by country"),
+                                    html.P("Figure 5 shows the win rates of home and away teams by country. Countries are sorted in descending order by home win rate. "
+                                           "However, this order is not completely meaningful, as the sometimes strong fluctuations in away win rates are noticeable. "
+                                           "For a more realistic assessment, not only a high home win rate is relevant, but also as low an away win rate as possible."),
+                                    html.P("Therefore, Figure 6 calculates and visualizes the difference between home and away win rates. "
+                                           "This results in a more meaningful ranking - for example, France moves from 8th to 2nd place."),
+                                    html.P("In Figure 7, these difference values are normalized to a range of 0 to 1 and converted into a score for further analysis."),
+                                    html.P("Figure 8 shows the average goals of home and away teams by country. Sorting is again descending by home goals. "
+                                           "This order is not very meaningful in terms of home advantage, as it only shows in which countries many goals are scored in general - such as in the Netherlands."),
+                                    html.P("To better assess the performance of home teams relative to away teams, Figure 9 calculates the goal difference and uses it as the basis for the ranking. "
+                                           "This highlights countries where home teams are particularly successful. For example, Greece rises from 5th place in Figure 8 to 1st place in Figure 9, "
+                                           "while Scotland falls from 5th to last place."),
+                                    html.P("In Figure 10, these goal difference values are normalized to a range of 0 to 1 for further processing."),
+                                    html.P("Figure 11 combines the results of Figures 7 and 10 to evaluate home advantage by country. "
+                                           "The normalized values of the win rate difference and the goal difference were each weighted at 50% and combined into an overall value."),
+                                    html.P("The result: Greece, which ranks first in both individual figures, clearly leads the ranking. "
+                                           "England (10th place) and Scotland (11th place) retain their positions in both tables. "
+                                           "The remaining countries swap places with each other and are ranked in the overall ranking based on small score differences."),
+                                    
+                                    dcc.Dropdown(
+                                        id='app1-tab3-dropdown',
+                                        options=[
+                                            {'label': 'Figure 5: Win Rate by Country', 'value': 'win_rate_country'},
+                                            {'label': 'Figure 6: Win Rate Difference', 'value': 'win_rate_diff'},
+                                            {'label': 'Figure 7: Normalized Win Rate Difference', 'value': 'norm_win_diff'},
+                                            {'label': 'Figure 8: Average Goals by Country', 'value': 'avg_goals_country'},
+                                            {'label': 'Figure 9: Goal Difference', 'value': 'goal_diff'},
+                                            {'label': 'Figure 10: Normalized Goal Difference', 'value': 'norm_goal_diff'},
+                                            {'label': 'Figure 11: Overall Home Advantage Score', 'value': 'overall_score'}
+                                        ],
+                                        value='win_rate_country'
+                                    ),
+                                    dcc.Graph(id='app1-tab3-graph')
+                                ], style={'padding': '20px'})
                             ]),
-                            html.Br(),
-                            dbc.Row([
-                                dbc.Col([
-                                    html.H5("Key Findings"),
-                                    html.Ul([
-                                        html.Li("Home teams win significantly more often than away teams"),
-                                        html.Li("Home teams score more goals on average than away teams"),
-                                        html.Li("The home advantage has been decreasing over time"),
-                                        html.Li("Greece shows the strongest home advantage, while Scotland shows the weakest"),
-                                    ])
-                                ], width=12)
+
+                            # TAB 4: Development by Country
+                            dcc.Tab(label='Development by Country', value='app1-tab4', children=[
+                                html.Div([
+                                    html.H3("Analysis of the development of home advantage in European football by country over time"),
+                                    html.P("Figure 12 directly examines the difference in win rates between home and away teams - based on the findings from the previous analysis. "
+                                           "For each country, this difference is calculated and its development over the years is shown. "
+                                           "Due to the large number of lines, the presentation initially appears complex, but is intended for readers who want to analyze individual countries in detail."),
+                                    html.P("To enable a cross-country comparison, Figure 13 calculates the trend slope of this difference for each country. "
+                                           "This shows how home advantage has changed over time. All countries show a negative development - meaning that home advantage is declining everywhere. "
+                                           "The smallest change is observed in Scotland, while France shows the strongest decline."),
+                                    html.P("In Figure 14, the trend slope values are normalized to a range of 0 to 1 to calculate standardized points. "
+                                           "These points will later be used to form an overall score."),
+                                    html.P("Figure 15 calculates the difference in average goals between home and away teams and shows its development over the years. "
+                                           "As in Figure 12, the result is a very confusing picture - this representation is therefore particularly suitable for examining individual countries."),
+                                    html.P("For better comparison, Figure 16 calculates the trend slope of the goal difference per country and ranks them. "
+                                           "Here too, all countries show a declining trend. The strongest decline is recorded in Greece, "
+                                           "while the smallest change is again observed in Scotland."),
+                                    html.P("To reuse these values, they are normalized to a range of 0 to 1 in Figure 17 and converted into standardized point values."),
+                                    html.P("Figure 18 combines the previously normalized values from Figure 14 and Figure 17 - that is, the point values of the win rate and goal difference - "
+                                           "each weighted at 50% and combined into an overall score to evaluate the decline in home advantage over time."),
+                                    html.P("The result: Greece shows the strongest decline in home advantage over the years. "
+                                           "Scotland, which ranks last in both individual evaluations, shows the least change as expected. "
+                                           "The development of the other countries can be seen in detail in the figure."),
+                                    
+                                    dcc.Dropdown(
+                                        id='app1-tab4-dropdown',
+                                        options=[
+                                            {'label': 'Figure 12: Win Rate Difference Over Time', 'value': 'win_diff_trend'},
+                                            {'label': 'Figure 13: Trend Slope of Win Rate Difference', 'value': 'win_diff_slope'},
+                                            {'label': 'Figure 14: Normalized Win Difference Slope', 'value': 'norm_win_slope'},
+                                            {'label': 'Figure 15: Goal Difference Over Time', 'value': 'goal_diff_trend'},
+                                            {'label': 'Figure 16: Trend Slope of Goal Difference', 'value': 'goal_diff_slope'},
+                                            {'label': 'Figure 17: Normalized Goal Difference Slope', 'value': 'norm_goal_slope'},
+                                            {'label': 'Figure 18: Overall Decline Score', 'value': 'overall_decline_score'}
+                                        ],
+                                        value='win_diff_trend'
+                                    ),
+                                    dcc.Graph(id='app1-tab4-graph')
+                                ], style={'padding': '20px'})
+                            ]),
+
+                            # TAB 5: Additional Analysis
+                            dcc.Tab(label='Additional Analysis', value='app1-tab5', children=[
+                                html.Div([
+                                    html.H3("Linked analysis of home advantage by country and trend"),
+                                    html.P("In this section, an analysis is conducted that combines the point values from Figure 11 (home advantage by country) "
+                                           "with the change values from Figure 17 (decline of home advantage over the years). "
+                                           "Figure 11 and Figure 17 are shown side by side below."),
+                                    html.P("For each country, the point value from Figure 17 is subtracted from the point value from Figure 11 to obtain a new overall value. "
+                                           "Based on this, a new ranking is created in Figure 19."),
+                                    html.P("The goal of this final presentation is to show how strong the home advantage was originally in a country, "
+                                           "how much it has declined over the years, and where the respective country currently stands in comparison."),
+                                    html.P("An example of this is Greece and Scotland: While Greece originally had the highest home advantage, "
+                                           "it simultaneously shows the strongest decline. Scotland, on the other hand, has the least home advantage, "
+                                           "but shows almost no change over the years. As a result, both countries end up in the middle of the combined ranking."),
+                                    html.P("Looking at Spain, the country ranks 4th with a home advantage value of 0.7. At the same time, "
+                                           "it is one of the countries with the least decline (2nd place). This means: Spain manages to largely maintain its existing home advantage - "
+                                           "which suggests that the country has the potential to rise to the top of the ranking in the coming years."),
+                                    html.P("Looking at the Netherlands, the country ranks 2nd in home advantage and only third from last in its decline. "
+                                           "This means that the Netherlands have largely preserved their home advantage and rank second in the combined ranking."),
+                                    html.P("Belgium, Germany and Turkey also belong to the countries that have at least partially preserved their home advantage. "
+                                           "They occupy places 3, 4 and 5 in the ranking of stability."),
+                                    html.P("Portugal, on the other hand, forms the tail end of this analysis. The country ranks only 9th in home advantage and simultaneously shows the third strongest decline. "
+                                           "This suggests that Portugal cannot maintain its home advantage in the long term and is moving towards the last place."),
+                                    html.P("England, France and Italy also belong to the countries where home advantage is declining particularly quickly."),
+                                
+                                    html.Div([
+                                        html.Div(dcc.Graph(figure=fig_tab3_11), style={'width': '48%', 'display': 'inline-block'}),
+                                        html.Div(dcc.Graph(figure=fig_tab4_18), style={'width': '48%', 'display': 'inline-block'})
+                                    ], style={'margin-bottom': '20px'}),
+                                    
+                                    html.H4("Combined Home Advantage Score (Home Advantage Score - Decline Score)", style={'textAlign': 'center'}),
+                                    dcc.Graph(figure=fig_combined_score)
+                                ], style={'padding': '20px'})
                             ])
                         ])
                     ])
@@ -392,7 +783,255 @@ app.layout = dbc.Container([
 ], fluid=True)  # This closes the dbc.Container
 
 # ------------------------
-# Callbacks
+# Callbacks for app1.py functionality
+# ------------------------
+
+# Callback for Tab-1
+@app.callback(
+    Output('app1-tab1-graph', 'figure'),
+    Input('app1-tab1-dropdown', 'value')
+)
+def update_tab1_graph(selected_value):
+    if selected_value == 'win_rate':
+        return match_fig_app1
+    elif selected_value == 'avg_goals':
+        return goal_fig_app1
+    return match_fig_app1  # Default
+
+# Callback for Tab-2
+@app.callback(
+    Output('app1-tab2-graph', 'figure'),
+    Input('app1-tab2-dropdown', 'value')
+)
+def update_tab2_graph(selected_value):
+    if selected_value == 'win_rate_trend':
+        return fig_winrate_trend_app1
+    elif selected_value == 'goals_trend':
+        return fig_goals_avg_app1
+    return fig_winrate_trend_app1  # Default
+
+# Callback for Tab-3
+@app.callback(
+    Output('app1-tab3-graph', 'figure'),
+    Input('app1-tab3-dropdown', 'value')
+)
+def update_tab3_graph(selected_value):
+    if selected_value == 'win_rate_country':
+        fig = go.Figure()
+        fig.add_trace(go.Bar(
+            x=country_stats_sorted_win_app1.index,
+            y=country_stats_sorted_win_app1['home_win_pct'],
+            name='Home Win Rate',
+            marker_color='royalblue'
+        ))
+        fig.add_trace(go.Bar(
+            x=country_stats_sorted_win_app1.index,
+            y=country_stats_sorted_win_app1['away_win_pct'],
+            name='Away Win Rate',
+            marker_color='darkorange'
+        ))
+        fig.update_layout(
+            title='Win Rates by Country (Sorted by Home Win Rate)',
+            xaxis_title='Country',
+            yaxis_title='Win Rate (%)',
+            barmode='group'
+        )
+        return fig
+        
+    elif selected_value == 'win_rate_diff':
+        fig = go.Figure(go.Bar(
+            x=country_stats_sorted_win_diff_app1.index,
+            y=country_stats_sorted_win_diff_app1['win_pct_diff'],
+            marker_color='green'
+        ))
+        fig.update_layout(
+            title='Home vs Away Win Rate Difference',
+            xaxis_title='Country',
+            yaxis_title='Difference (%)'
+        )
+        return fig
+        
+    elif selected_value == 'norm_win_diff':
+        fig = go.Figure(go.Bar(
+            x=country_stats_sorted_win_diff_app1.index,
+            y=country_stats_sorted_win_diff_app1['norm_win_diff'],
+            marker_color='purple'
+        ))
+        fig.update_layout(
+            title='Normalized Win Rate Difference',
+            xaxis_title='Country',
+            yaxis_title='Normalized Value (0-1)'
+        )
+        return fig
+        
+    elif selected_value == 'avg_goals_country':
+        fig = go.Figure()
+        fig.add_trace(go.Bar(
+            x=country_stats_sorted_goal_app1.index,
+            y=country_stats_sorted_goal_app1['avg_home_goals'],
+            name='Home Goals',
+            marker_color='royalblue'
+        ))
+        fig.add_trace(go.Bar(
+            x=country_stats_sorted_goal_app1.index,
+            y=country_stats_sorted_goal_app1['avg_away_goals'],
+            name='Away Goals',
+            marker_color='darkorange'
+        ))
+        fig.update_layout(
+            title='Average Goals by Country (Sorted by Home Goals)',
+            xaxis_title='Country',
+            yaxis_title='Average Goals per Match',
+            barmode='group'
+        )
+        return fig
+        
+    elif selected_value == 'goal_diff':
+        fig = go.Figure(go.Bar(
+            x=country_stats_sorted_goal_diff_app1.index,
+            y=country_stats_sorted_goal_diff_app1['goal_diff'],
+            marker_color='red'
+        ))
+        fig.update_layout(
+            title='Home vs Away Goal Difference',
+            xaxis_title='Country',
+            yaxis_title='Goal Difference'
+        )
+        return fig
+        
+    elif selected_value == 'norm_goal_diff':
+        fig = go.Figure(go.Bar(
+            x=country_stats_sorted_goal_diff_app1.index,
+            y=country_stats_sorted_goal_diff_app1['norm_goal_diff'],
+            marker_color='orange'
+        ))
+        fig.update_layout(
+            title='Normalized Goal Difference',
+            xaxis_title='Country',
+            yaxis_title='Normalized Value (0-1)'
+        )
+        return fig
+        
+    elif selected_value == 'overall_score':
+        fig = go.Figure(go.Bar(
+            x=country_stats_sorted_score_app1.index,
+            y=country_stats_sorted_score_app1['total_score'],
+            marker_color='blue'
+        ))
+        fig.update_layout(
+            title='Overall Home Advantage Score by Country',
+            xaxis_title='Country',
+            yaxis_title='Total Score (0-1)'
+        )
+        return fig
+
+# Callback for Tab-4
+@app.callback(
+    Output('app1-tab4-graph', 'figure'),
+    Input('app1-tab4-dropdown', 'value')
+)
+def update_tab4_graph(selected_value):
+    if selected_value == 'win_diff_trend':
+        fig = go.Figure()
+        for league in country_yearly_stats_app1['League'].unique():
+            league_data = country_yearly_stats_app1[country_yearly_stats_app1['League'] == league]
+            fig.add_trace(go.Scatter(
+                x=league_data['Year'],
+                y=league_data['win_pct_diff'],
+                mode='lines+markers',
+                name=league
+            ))
+        fig.update_layout(
+            title='Win Rate Difference Development by Country',
+            xaxis_title='Year',
+            yaxis_title='Home vs Away Win Rate Difference (%)'
+        )
+        return fig
+        
+    elif selected_value == 'win_diff_slope':
+        fig = go.Figure(go.Bar(
+            x=trend_df_sorted_win['League'],
+            y=trend_df_sorted_win['win_diff_slope'],
+            marker_color='red'
+        ))
+        fig.update_layout(
+            title='Trend of Win Rate Difference (More negative = stronger decline)',
+            xaxis_title='Country',
+            yaxis_title='Trend Slope'
+        )
+        return fig
+        
+    elif selected_value == 'norm_win_slope':
+        fig = go.Figure(go.Bar(
+            x=trend_df_sorted_win['League'],
+            y=trend_df_sorted_win['norm_win_slope'],
+            marker_color='purple'
+        ))
+        fig.update_layout(
+            title='Normalized Trend Slope of Win Rate Difference',
+            xaxis_title='Country',
+            yaxis_title='Normalized Value (0-1)'
+        )
+        return fig
+        
+    elif selected_value == 'goal_diff_trend':
+        fig = go.Figure()
+        for league in country_yearly_stats_app1['League'].unique():
+            league_data = country_yearly_stats_app1[country_yearly_stats_app1['League'] == league]
+            fig.add_trace(go.Scatter(
+                x=league_data['Year'],
+                y=league_data['goal_diff'],
+                mode='lines+markers',
+                name=league
+            ))
+        fig.update_layout(
+            title='Goal Difference Development by Country',
+            xaxis_title='Year',
+            yaxis_title='Home vs Away Goal Difference'
+        )
+        return fig
+        
+    elif selected_value == 'goal_diff_slope':
+        fig = go.Figure(go.Bar(
+            x=trend_df_sorted_goal['League'],
+            y=trend_df_sorted_goal['goal_diff_slope'],
+            marker_color='blue'
+        ))
+        fig.update_layout(
+            title='Trend of Goal Difference (More negative = stronger decline)',
+            xaxis_title='Country',
+            yaxis_title='Trend Slope'
+        )
+        return fig
+        
+    elif selected_value == 'norm_goal_slope':
+        fig = go.Figure(go.Bar(
+            x=trend_df_sorted_goal['League'],
+            y=trend_df_sorted_goal['norm_goal_slope'],
+            marker_color='orange'
+        ))
+        fig.update_layout(
+            title='Normalized Trend Slope of Goal Difference',
+            xaxis_title='Country',
+            yaxis_title='Normalized Value (0-1)'
+        )
+        return fig
+        
+    elif selected_value == 'overall_decline_score':
+        fig = go.Figure(go.Bar(
+            x=trend_df_sorted_score['League'],
+            y=trend_df_sorted_score['total_trend_score'],
+            marker_color='green'
+        ))
+        fig.update_layout(
+            title='Overall Home Advantage Decline Score',
+            xaxis_title='Country',
+            yaxis_title='Total Trend Score (0-1)'
+        )
+        return fig
+
+# ------------------------
+# Existing Callbacks from app.py
 # ------------------------
 
 @app.callback(
@@ -791,6 +1430,7 @@ def update_head_to_head(team1, team2, league):
             error_fig,
             error_fig
         )
+
 # Run the app
 # ------------------------
 if __name__ == '__main__':
