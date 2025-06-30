@@ -10,7 +10,7 @@ Interactive web dashboard analyzing European football statistics with visualizat
 ### 🔍👥 Research Questions and Project Contributors
 
 - **Abdul Jamil Safi** – Project Lead  
-  🔹 Focus: Research Question 2  
+  🔹 Focus: Research Question 2 and Responsible for integrating team code, coordinating development, and delivering the final functional dashboard.
   🔹 Tasks: 0:0 analysis, SpannungsScore, league comparison  
   📧 abdul.safi@stud.fhgr.ch
 
@@ -85,7 +85,11 @@ python app.py
 
 ##screenshots
 ![127 0 0 1_8050_](https://github.com/user-attachments/assets/89b2a9e5-888e-4b6b-90b2-c2afc4aa388c)
-![127 0 0 1_8050_ (1)](https://github.com/user-attachments/assets/ac13222c-a493-451b-b18a-ffb47d568ed8)
+![127 0 0 1_8050_ (4)](https://github.com/user-attachments/assets/3c5e80e6-63aa-4527-8654-c5ca1d86ac78)
+![127 0 0 1_8050_ (5)](https://github.com/user-attachments/assets/cf876d82-a3e9-4c24-90b9-f6f6e2f8b1c1)
+![127 0 0 1_8050_ (6)](https://github.com/user-attachments/assets/f6436f25-421f-4569-bda5-d9130015e871)
+![127 0 0 1_8050_ (7)](https://github.com/user-attachments/assets/b58519cd-7c9c-434d-b3a6-6275fc2c561a)
+![127 0 0 1_8050_ (8)](https://github.com/user-attachments/assets/a048e681-223f-4720-8746-f13cb96089fd)
 ![127 0 0 1_8050_ (2)](https://github.com/user-attachments/assets/f1205a00-4cd1-45d1-aed3-312b0619e889)
 ![127 0 0 1_8050_ (3)](https://github.com/user-attachments/assets/4be6b63c-b10c-4ae0-9a57-8535936a17ac)
 
